@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
       <body
         className={`${poppins.className} antialiased`}
       >
-        <header className="py-3 w-full mx-auto">
+        <header className="py-3 md:w-11/12  mx-auto">
           <Navbar></Navbar>
         </header>
 
