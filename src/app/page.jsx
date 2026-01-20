@@ -1,11 +1,14 @@
 import Banner from "@/components/home/Banner";
-import Image from "next/image";
+import Products from "@/components/home/Products";
 
 export default function Home() {
   return (
-    <div className="py-3 md:w-11/12 mx-auto">
+    <div className="space-y-20 md:w-11/12 mx-auto">
       <section>
         <Banner></Banner>
+      </section>
+      <section>
+        <Products></Products>
       </section>
     </div>
   );
