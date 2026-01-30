@@ -1,107 +1,85 @@
 import Image from "next/image";
-import { FaStar, FaShoppingCart, FaTruck } from "react-icons/fa";
+import { getProductById } from "@/actions/server/product";
 import { notFound } from "next/navigation";
-
-// demo fetch (replace with real DB call)
-const getProduct = async (id) => {
-  // fetch from DB / API
-  return {
-    title: "Number and Counting Learning Board",
-    image: "https://i.ibb.co.com/p6Q0fchX/81a72-DDFc-KL-AC-SL1500.jpg",
-    price: 1250,
-    discount: 10,
-    ratings: 4.6,
-    reviews: 19,
-    sold: 31,
-    description:
-      "এই learning board টি শিশুদের প্রাথমিক গণিত শেখার জন্য একটি কার্যকর educational toy।",
-    info: [
-      "সংখ্যা ও গণনার ধারণা তৈরি করে",
-      "হ্যান্ডস-অন লার্নিং নিশ্চিত করে",
-      "নন-টক্সিক ও শিশু-নিরাপদ উপকরণ",
-    ],
-    qna: [
-      {
-        question: "এই বোর্ডটি কোন বয়সের শিশুদের জন্য উপযুক্ত?",
-        answer: "৩ থেকে ৬ বছর বয়সী শিশুদের জন্য উপযোগী।",
-      },
-    ],
-  };
-};
+import { FaStar, FaCheckCircle } from "react-icons/fa";
 
 const ProductDetailsPage = async ({ params }) => {
-  const product = await getProduct(params.id);
+  // ✅ Next.js 14 fix
+  const { id } = await params;
 
-  if (!product) return notFound();
+  const product = await getProductById(id);
+  if (!product) notFound();
 
-  const discountedPrice = product.discount
-    ? Math.round(
-        product.price - (product.price * product.discount) / 100
-      )
-    : product.price;
+  const {
+    title,
+    bangla,
+    image,
+    price,
+    discount,
+    ratings,
+    reviews,
+    sold,
+    description,
+    info,
+    qna,
+  } = product;
+
+  const finalPrice = discount
+    ? Math.round(price - (price * discount) / 100)
+    : price;
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
-      {/* ================== TOP SECTION ================== */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
+    <div className="max-w-7xl mx-auto px-4 py-10">
+
+      {/* TOP SECTION */}
+      <div className="grid lg:grid-cols-2 gap-12 bg-white p-6 rounded-xl shadow-lg">
+
         {/* IMAGE */}
-        <div className="bg-base-200 rounded-xl p-6">
-          <div className="relative w-full h-[400px]">
-            <Image
-              src={product.image}
-              alt={product.title}
-              fill
-              className="object-contain"
-            />
-          </div>
+        <div className="relative h-[420px] rounded-xl overflow-hidden bg-gray-100">
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-contain"
+            priority
+          />
         </div>
 
-        {/* INFO */}
+        {/* CONTENT */}
         <div className="space-y-4">
-          <h1 className="text-2xl font-bold">{product.title}</h1>
+          <h1 className="text-3xl font-bold">{title}</h1>
+          <p className="text-gray-500">{bangla}</p>
 
           {/* Rating */}
           <div className="flex items-center gap-2">
-            <div className="flex items-center text-warning">
-              <FaStar />
-              <span className="ml-1 font-semibold">
-                {product.ratings}
-              </span>
-            </div>
+            <FaStar className="text-yellow-400" />
+            <span className="font-semibold">{ratings}</span>
             <span className="text-gray-500">
-              ({product.reviews} reviews)
-            </span>
-            <span className="text-gray-400">
-              | Sold {product.sold}
+              ({reviews} reviews • {sold} sold)
             </span>
           </div>
 
           {/* Price */}
-          <div className="flex items-center gap-3">
-            <span className="text-3xl font-bold text-primary">
-              ৳{discountedPrice}
+          <div className="flex items-center gap-4 mt-4">
+            <span className="text-3xl font-bold text-orange-500">
+              ৳{finalPrice}
             </span>
-            {product.discount > 0 && (
-              <span className="line-through text-gray-400">
-                ৳{product.price}
-              </span>
-            )}
-            {product.discount > 0 && (
-              <span className="badge badge-error text-white">
-                -{product.discount}%
-              </span>
+
+            {discount > 0 && (
+              <>
+                <span className="line-through text-gray-400">
+                  ৳{price}
+                </span>
+                <span className="px-2 py-1 bg-red-500 text-white text-sm rounded">
+                  -{discount}%
+                </span>
+              </>
             )}
           </div>
 
-          {/* Short Description */}
-          <p className="text-gray-600 leading-relaxed">
-            {product.description}
-          </p>
-
-          {/* Actions */}
-          <div className="flex gap-4 pt-4">
-            <button className="btn btn-primary gap-2">
-              <FaShoppingCart />
+          {/* Buttons */}
+          <div className="flex gap-4 mt-6">
+            <button className="btn btn-primary px-10">
               Add to Cart
             </button>
             <button className="btn btn-outline">
@@ -109,65 +87,52 @@ const ProductDetailsPage = async ({ params }) => {
             </button>
           </div>
 
-          {/* Delivery */}
-          <div className="flex items-center gap-2 text-sm text-gray-500 pt-2">
-            <FaTruck />
-            <span>Fast delivery available</span>
-          </div>
-        </div>
-      </div>
-
-      {/* ================== DETAILS SECTION ================== */}
-      <div className="mt-14 grid grid-cols-1 md:grid-cols-3 gap-8">
-        {/* Description */}
-        <div className="md:col-span-2 space-y-6">
-          <div>
-            <h2 className="text-xl font-semibold mb-3">
-              Product Description
-            </h2>
-            <p className="text-gray-600 leading-relaxed">
-              {product.description}
-            </p>
-          </div>
-
-          {/* QnA */}
-          <div>
-            <h2 className="text-xl font-semibold mb-3">
-              Questions & Answers
-            </h2>
-            <div className="space-y-3">
-              {product.qna.map((item, i) => (
-                <div
-                  key={i}
-                  className="bg-base-200 p-4 rounded-lg"
-                >
-                  <p className="font-medium">{item.question}</p>
-                  <p className="text-gray-600 mt-1">
-                    {item.answer}
-                  </p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
-        {/* Features */}
-        <div className="bg-base-200 p-6 rounded-xl h-fit">
-          <h3 className="text-lg font-semibold mb-4">
-            Product Features
-          </h3>
-          <ul className="space-y-2">
-            {product.info.map((item, i) => (
-              <li
-                key={i}
-                className="flex items-center gap-2 text-gray-600"
-              >
-                ✔ {item}
-              </li>
+          {/* Features */}
+          <div className="mt-8 space-y-2">
+            {info?.map((item, index) => (
+              <p key={index} className="flex items-center gap-2">
+                <FaCheckCircle className="text-green-500" />
+                {item}
+              </p>
             ))}
-          </ul>
+          </div>
         </div>
       </div>
+
+      {/* DESCRIPTION */}
+      <div className="mt-14 bg-white p-6 rounded-xl shadow">
+        <h2 className="text-2xl font-semibold mb-4">
+          Product Description
+        </h2>
+        <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+          {description}
+        </p>
+      </div>
+
+      {/* QNA */}
+      {qna?.length > 0 && (
+        <div className="mt-12 bg-white p-6 rounded-xl shadow">
+          <h2 className="text-2xl font-semibold mb-4">
+            Frequently Asked Questions
+          </h2>
+
+          <div className="space-y-3">
+            {qna.map((item, index) => (
+              <details
+                key={index}
+                className="p-4 border rounded-lg cursor-pointer"
+              >
+                <summary className="font-medium">
+                  {item.question}
+                </summary>
+                <p className="mt-2 text-gray-600">
+                  {item.answer}
+                </p>
+              </details>
+            ))}
+          </div>
+        </div>
+      )}
     </div>
   );
 };

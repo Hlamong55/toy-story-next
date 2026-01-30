@@ -5,7 +5,7 @@ import Link from "next/link";
 import { FaStar, FaShoppingCart } from "react-icons/fa";
 
 const ProductCard = ({ product }) => {
-  const { title, image, price, discount, ratings, reviews, sold } = product;
+  const { _id, title, image, price, discount, ratings, reviews, sold } = product;
 
   const discountedPrice = discount
     ? Math.round(price - (price * discount) / 100)
