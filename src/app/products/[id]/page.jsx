@@ -4,7 +4,8 @@ import { notFound } from "next/navigation";
 import { FaStar, FaCheckCircle } from "react-icons/fa";
 
 const ProductDetailsPage = async ({ params }) => {
-  const  id = (params.id);
+  // ✅ Next.js 14 fix
+  const { id } = await params;
 
   const product = await getProductById(id);
   if (!product) notFound();
@@ -28,35 +29,27 @@ const ProductDetailsPage = async ({ params }) => {
     : price;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-14">
-
-      {/* ================= TOP SECTION ================= */}
-      <div className="grid lg:grid-cols-2 gap-14 items-start">
-
-        {/* IMAGE CARD */}
-        <div className="bg-white rounded-2xl shadow-lg p-6">
-          <div className="relative h-[420px] rounded-xl overflow-hidden bg-gray-100">
-            <Image
-              src={image}
-              alt={title}
-              fill
-              className="object-contain"
-              priority
-            />
-          </div>
+    <div className="max-w-7xl mx-auto px-4 py-10">
+      {/* TOP SECTION */}
+      <div className="grid lg:grid-cols-2 gap-12 bg-white p-6 rounded-xl shadow-lg">
+        {/* IMAGE */}
+        <div className="relative h-100 rounded-xl overflow-hidden bg-gray-100 p-5">
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover"
+            priority
+          />
         </div>
 
-        {/* INFO CARD */}
-        <div className="bg-white rounded-2xl shadow-lg p-8 space-y-6">
+        {/* CONTENT */}
+        <div className="space-y-4">
+          <h1 className="text-3xl font-bold">{title}</h1>
+          <p className="text-gray-500">{bangla}</p>
 
-          {/* TITLE */}
-          <div>
-            <h1 className="text-3xl font-bold text-gray-800">{title}</h1>
-            <p className="text-gray-500 mt-1">{bangla}</p>
-          </div>
-
-          {/* RATINGS */}
-          <div className="flex items-center gap-2 text-sm">
+          {/* Rating */}
+          <div className="flex items-center gap-2">
             <FaStar className="text-yellow-400" />
             <span className="font-semibold">{ratings}</span>
             <span className="text-gray-500">
@@ -64,41 +57,32 @@ const ProductDetailsPage = async ({ params }) => {
             </span>
           </div>
 
-          {/* PRICE */}
-          <div className="flex items-center gap-4">
-            <span className="text-4xl font-bold text-orange-500">
+          {/* Price */}
+          <div className="flex items-center gap-4 mt-4">
+            <span className="text-3xl font-bold text-orange-500">
               ৳{finalPrice}
             </span>
 
             {discount > 0 && (
               <>
-                <span className="line-through text-gray-400 text-lg">
-                  ৳{price}
-                </span>
-                <span className="px-3 py-1 bg-red-500 text-white text-sm rounded-full">
-                  {discount}% OFF
+                <span className="line-through text-gray-400">৳{price}</span>
+                <span className="px-2 py-1 bg-red-500 text-white text-sm rounded">
+                  -{discount}%
                 </span>
               </>
             )}
           </div>
 
-          {/* ACTION BUTTONS */}
-          <div className="flex gap-4 pt-2">
-            <button className="btn btn-primary flex-1 text-lg">
-              Add to Cart
-            </button>
-            <button className="btn btn-outline flex-1 text-lg">
-              Buy Now
-            </button>
+          {/* Buttons */}
+          <div className="flex gap-4 mt-6">
+            <button className="btn btn-primary px-10">Add to Cart</button>
+            <button className="btn btn-outline">Buy Now</button>
           </div>
 
-          {/* FEATURES */}
-          <div className="pt-6 border-t space-y-3">
+          {/* Features */}
+          <div className="mt-8 space-y-2">
             {info?.map((item, index) => (
-              <p
-                key={index}
-                className="flex items-center gap-2 text-gray-700"
-              >
+              <p key={index} className="flex items-center gap-2">
                 <FaCheckCircle className="text-green-500" />
                 {item}
               </p>
@@ -107,20 +91,18 @@ const ProductDetailsPage = async ({ params }) => {
         </div>
       </div>
 
-      {/* ================= DESCRIPTION ================= */}
-      <div className="mt-16 bg-white rounded-2xl shadow-lg p-8">
-        <h2 className="text-2xl font-semibold mb-4 border-b pb-2">
-          Product Description
-        </h2>
+      {/* DESCRIPTION */}
+      <div className="mt-14 bg-white p-6 rounded-xl shadow">
+        <h2 className="text-2xl font-bold mb-4">Product Description</h2>
         <p className="text-gray-600 leading-relaxed whitespace-pre-line">
           {description}
         </p>
       </div>
 
-      {/* ================= Q&A ================= */}
+      {/* QNA */}
       {qna?.length > 0 && (
-        <div className="mt-14 bg-white rounded-2xl shadow-lg p-8">
-          <h2 className="text-2xl font-semibold mb-6 border-b pb-2">
+        <div className="mt-12 bg-white p-6 rounded-xl shadow">
+          <h2 className="text-2xl font-bold mb-4">
             Frequently Asked Questions
           </h2>
 
@@ -128,14 +110,22 @@ const ProductDetailsPage = async ({ params }) => {
             {qna.map((item, index) => (
               <details
                 key={index}
-                className="group border rounded-xl p-4 cursor-pointer hover:bg-gray-50 transition"
+                className="group rounded-xl border border-gray-200 bg-white shadow-sm transition-all duration-300 hover:shadow-md open:border-primary"
               >
-                <summary className="font-medium text-gray-800">
-                  {item.question}
+                {/* QUESTION */}
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 px-8 py-4 font-semibold text-gray-800">
+                  <span>{item.question}</span>
+
+                  {/* ICON */}
+                  <span className="text-primary transition-transform duration-300 group-open:rotate-180 bg-orange-100 p-2 rounded-full">
+                    ▼
+                  </span>
                 </summary>
-                <p className="mt-3 text-gray-600 leading-relaxed">
+
+                {/* ANSWER */}
+                <div className="px-5 pb-5 pt-1 text-gray-700 leading-relaxed">
                   {item.answer}
-                </p>
+                </div>
               </details>
             ))}
           </div>
