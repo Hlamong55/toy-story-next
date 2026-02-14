@@ -3,6 +3,40 @@ import { getProductById } from "@/actions/server/product";
 import { notFound } from "next/navigation";
 import { FaStar, FaCheckCircle } from "react-icons/fa";
 
+
+export async function generateMetadata({ params }) {
+  const {id} = await params;
+  const product = await getProductById(id);
+
+  return {
+    title: product.name,
+    description: product.description,
+
+    openGraph: {
+      title: product.name,
+      description: product.description,
+      images: [
+        {
+          url: product.image,
+          width: 1200,
+          height: 630,
+          alt: product.name,
+        },
+      ],
+    },
+
+    twitter: {
+      card: "summary_large_image",
+      title: product.name,
+      description: product.description,
+      images: [product.image],
+    },
+  };
+}
+
+
+
+
 const ProductDetailsPage = async ({ params }) => {
   // ✅ Next.js 14 fix
   const { id } = await params;
