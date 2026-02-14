@@ -33,8 +33,8 @@ export const metadata = {
     "learning toys",
   ],
 
-  authors: [{ name: "Mong bhai", url: "https://yourportfolio.com" }],
-  creator: "Mong bhai",
+  authors: [{ name: "Hlamong Sing Marma" }],
+  creator: "Toy Story",
   publisher: "Toy Story",
 
   icons: {
@@ -47,7 +47,7 @@ export const metadata = {
     title: "Toy Story - Best Kids Toys Online Store",
     description:
       "Shop fun and educational toys for kids. Get discounts and explore our latest toy collections.",
-    url: "https://toystory.com",
+    url: "https://toy-story-iota.vercel.app",
     siteName: "Toy Story",
     images: [
       {

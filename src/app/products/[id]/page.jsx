@@ -2,6 +2,7 @@ import Image from "next/image";
 import { getProductById } from "@/actions/server/product";
 import { notFound } from "next/navigation";
 import { FaStar, FaCheckCircle } from "react-icons/fa";
+import CartButton from "@/components/buttons/CartButton";
 
 
 export async function generateMetadata({ params }) {
@@ -33,8 +34,6 @@ export async function generateMetadata({ params }) {
     },
   };
 }
-
-
 
 
 const ProductDetailsPage = async ({ params }) => {
@@ -108,9 +107,8 @@ const ProductDetailsPage = async ({ params }) => {
           </div>
 
           {/* Buttons */}
-          <div className="flex gap-4 mt-6">
-            <button className="btn btn-primary px-10">Add to Cart</button>
-            <button className="btn btn-outline">Buy Now</button>
+          <div className=" mt-6">
+           <CartButton product={ product }></CartButton>
           </div>
 
           {/* Features */}
