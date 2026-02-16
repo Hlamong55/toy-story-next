@@ -3,7 +3,7 @@ export const blogs = [
     id: 1,
     title: "Best Educational Toys for Kids in 2026",
     slug: "best-educational-toys-for-kids",
-    image: "/blog/toy1.jpg",
+    image: "https://i.ibb.co.com/W4L8SFbK/image.png",
     author: "Toy Story Team",
     date: "2026-02-10",
     category: "Education",
